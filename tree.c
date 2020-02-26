@@ -22,31 +22,6 @@ struct TreeNode *allocate_node(const char *value) {
 	strcpy(new_node->value, value);
 	return new_node;
 }
-
-/**
- *  Insert a new image to a tree
- *
- *  @param tree A pointer to the root of the tree.
- *  @param values An array, whose first three members are the attribute values for 
- *                the image and the last one is the filename
- */
-void tree_insert(struct TreeNode *root, char **values) {
-	struct TreeNode *prev;
-	struct TreeNode *new_node;
-		if(root->sibling == NULL && root->child == NULL){//Adding first image if there is none.
-			root->child = allocate_node(values[0]);
-			root->child->child = allocate_node(values[1]);
-			root->child->child->child = allocate_node(values[2]);
-			root->child->child->child->child = allocate_node(value[3]);
-			return 0;
-		}
-		root = root -> child; //Changes head to the first actual image in the tree
-		new_node = traverse_level(root, values[0]);//Traverses first level of the tree, returns pointer to the new_node or the sibling of that level
-		new_node = traverse_level(new_node->child, values[1]);//Traverses second level, as above.
-		new_node = traverse_level(new_node->child, values[2]);//Traverses second level, as above.
-		new_node = traverse_level(new_node->child, values[3]);//Traverses second level, as above.
-				
-}
 /**
  *  Traverses a level of the tree and checks whether the value is already present or not.
 	If present, returns a pointer to that node. Otherwise creates a new sibling for that level
@@ -80,9 +55,32 @@ while(root != NULL){
 }
 	//Below runs if the new value is greater than all other siblings in ascii value
 	root = allocate_node(value); //Previous while loop would have set root to be its sibling, which is null currently
-	prev -> sibling = new_node; 
+	prev -> sibling = root; 
 	return root; //Returns the new node
 }
+/**
+ *  Insert a new image to a tree
+ *
+ *  @param tree A pointer to the root of the tree.
+ *  @param values An array, whose first three members are the attribute values for 
+ *                the image and the last one is the filename
+ */
+void tree_insert(struct TreeNode *root, char **values) {
+	struct TreeNode *new_node;
+		if(root->sibling == NULL && root->child == NULL){//Adding first image if there is none.
+			root->child = allocate_node(values[0]);
+			root->child->child = allocate_node(values[1]);
+			root->child->child->child = allocate_node(values[2]);
+			root->child->child->child->child = allocate_node(values[3]);
+		} else {
+		root = root -> child; //Changes head to the first actual image in the tree
+		new_node = traverse_level(root, values[0]);//Traverses first level of the tree, returns pointer to the new_node or the sibling of that level
+		new_node = traverse_level(new_node->child, values[1]);//Traverses second level, as above.
+		new_node = traverse_level(new_node->child, values[2]);//Traverses second level, as above.
+		new_node = traverse_level(new_node->child, values[3]);//Traverses second level, as above.
+		}	
+}
+
 
 /**
  *  Searches a tree to print all files with matching attribute values.
@@ -107,7 +105,7 @@ void tree_search(const struct TreeNode *root, char **values) {
     }
     //At this point traversal should be at the last level of the tree, where files are located
 while(root != NULL){//Loops all siblings of the file level, as to reach this point either root is null or the wanted attributes are found
-printf(("%s ", root->value);
+printf("%s ", root->value);
 root = root->sibling;
 }
 }

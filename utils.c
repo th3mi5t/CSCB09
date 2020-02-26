@@ -13,6 +13,12 @@
  * Return the number of tokens, and store pointers to them in cmd_argv.
  */
 int tokenize(char *cmd, char **cmd_argv) {
-        // returning 0 for now, so the compiler does not complain
-	return 0;
+int count = 0;
+      char *start_token = strtok(cmd, DELIMITERS);
+       while( start_token != NULL ) {
+    cmd_argv[count] = start_token; //Assigns current token pointer to current array
+    count++;
+      start_token = strtok(NULL, DELIMITERS);
+   }
+    return count;
 }
