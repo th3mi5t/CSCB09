@@ -91,6 +91,25 @@ while(root != NULL){
  *  @param values An array of attribute values
  */
 void tree_search(const struct TreeNode *root, char **values) {
+	int level_index = 0;
+    root = root->child; //Increments root to start at first value, not "" value
+    while(root != NULL && level_index != 3){
+        if(strcmp(values[level_index],root->value) == 0){//If the value of that level is found, advances down that child
+            root = root->child;
+            level_index++;//Increases level to next one
+            }else if(strcmp(values[level_index],root->value) > 0){
+        root = root->sibling;
+    }
+    else {
+        fprintf(stderr, "File not found.");
+        root = NULL;
+    }
+    }
+    //At this point traversal should be at the last level of the tree, where files are located
+while(root != NULL){//Loops all siblings of the file level, as to reach this point either root is null or the wanted attributes are found
+printf(("%s ", root->value);
+root = root->sibling;
+}
 }
 
 /**
