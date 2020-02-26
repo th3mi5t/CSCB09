@@ -116,4 +116,15 @@ root = root->sibling;
  *  @param tree A pointer to the root of the tree.
  */
 void tree_print(const struct TreeNode *tree) {
-}
+  if (tree == NULL){
+	  printf("\n");
+  }
+  if(tree->child != NULL){
+    printf("%s ", tree->value);
+	tree_print(tree->child);
+  }
+  if (tree->sibling != NULL){
+    printf("%s ", tree->value);
+	tree_print(tree->sibling);
+  }
+	}
