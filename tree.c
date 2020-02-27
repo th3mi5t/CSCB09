@@ -37,7 +37,7 @@ while(temp != NULL){
 if(strcmp(temp->value,value) == 0){	//If value is already present on level
 return temp;//returns a pointer for that attribute/image
 } else {
-	root= root-> sibling;//Checks siblings
+	temp= temp -> sibling;//Checks siblings
 }
 }
 //Value is not present, prompting a new node to be inserted.
@@ -68,16 +68,16 @@ while(root != NULL){
 void tree_insert(struct TreeNode *root, char **values) {
 	struct TreeNode *new_node;
 		if(root->sibling == NULL && root->child == NULL){//Adding first image if there is none.
-			root->child = allocate_node(values[0]);
-			root->child->child = allocate_node(values[1]);
-			root->child->child->child = allocate_node(values[2]);
-			root->child->child->child->child = allocate_node(values[3]);
+			root->child = allocate_node(values[1]);
+			root->child->child = allocate_node(values[2]);
+			root->child->child->child = allocate_node(values[3]);
+			root->child->child->child->child = allocate_node(values[4]);
 		} else {
 		root = root -> child; //Changes head to the first actual image in the tree
-		new_node = traverse_level(root, values[0]);//Traverses first level of the tree, returns pointer to the new_node or the sibling of that level
-		new_node = traverse_level(new_node->child, values[1]);//Traverses second level, as above.
+		new_node = traverse_level(root, values[1]);//Traverses first level of the tree, returns pointer to the new_node or the sibling of that level
 		new_node = traverse_level(new_node->child, values[2]);//Traverses second level, as above.
 		new_node = traverse_level(new_node->child, values[3]);//Traverses second level, as above.
+		new_node = traverse_level(new_node->child, values[4]);//Traverses second level, as above.
 		}	
 }
 
@@ -89,9 +89,9 @@ void tree_insert(struct TreeNode *root, char **values) {
  *  @param values An array of attribute values
  */
 void tree_search(const struct TreeNode *root, char **values) {
-	int level_index = 0;
+	int level_index = 1;
     root = root->child; //Increments root to start at first value, not "" value
-    while(root != NULL && level_index != 3){
+    while(root != NULL && level_index != 4){
         if(strcmp(values[level_index],root->value) == 0){//If the value of that level is found, advances down that child
             root = root->child;
             level_index++;//Increases level to next one

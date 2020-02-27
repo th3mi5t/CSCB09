@@ -31,11 +31,11 @@ int main(void) {
 
         // Add your code below:
 	while(fgets(buf, BUFFER_SIZE, stdin) != NULL){
-		if(tokenize(buf, args) == 6 && args[0][0] == 'i'){
+		if(tokenize(buf, args) == 5 && args[0][0] == 'i'){
 			tree_insert(root_ptr, args);
 		}
 
-		else if(tokenize(buf, args) == 5 && args[0][0] == 'q'){
+		else if(tokenize(buf, args) == 4 && args[0][0] == 'q'){
 			tree_search(root_ptr, args);
 		}
 		else if(tokenize(buf, args) == 1 && args[0][0] == 'p'){
