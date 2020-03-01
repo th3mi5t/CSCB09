@@ -30,19 +30,24 @@ int main(void) {
 	struct TreeNode *root_ptr = &root;
 
         // Add your code below:
+		int tokenize_value;
 	while(fgets(buf, BUFFER_SIZE, stdin) != NULL){
-		if(tokenize(buf, args) == 5 && args[0][0] == 'i'){
+		tokenize_value = tokenize(buf, args);
+		if((tokenize_value == 5) && (args[0][0] == 'i')){
 			tree_insert(root_ptr, args);
 		}
-
-		else if(tokenize(buf, args) == 4 && args[0][0] == 'q'){
+		else if((tokenize_value == 4) && (args[0][0] == 'q')){
 			tree_search(root_ptr, args);
 		}
-		else if(tokenize(buf, args) == 1 && args[0][0] == 'p'){
+		else if((tokenize_value == 1) && (args[0][0] == 'p')){
+			if(root_ptr->child != NULL) {
 			tree_print(root_ptr);
+			}else{
+				printf("(null)");
+			}
 		}		
 		else {
-			fprintf(stderr, "Invalid command.");
+			fprintf(stderr, "Invalid command.\n");
 		}
 		}
         return 0;		

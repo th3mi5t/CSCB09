@@ -1,7 +1,12 @@
 /*
  * Created by Sotirios-Efstathios Maneas on 2017-01-02.
  */
-
+/*
+Jason Yu
+Feb.29,2020
+CSCB09
+yujason9
+*/
 #include <stdio.h>
 #include <string.h>
 
