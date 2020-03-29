@@ -1,3 +1,8 @@
+/*Jason Yu
+March.29,2020
+CSCB09
+yujason9
+*/
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -21,6 +26,7 @@ Image* read_image(char *filename)
 	Image *img = malloc(sizeof(Image));
 	char buf[4];
 	fp = fopen(filename, "r");
+	//printf("%s\n", filename);
 	 if(fp == NULL)
     {
         fprintf(stderr,"Error opening file\n");
@@ -97,6 +103,7 @@ float compare_images(Image *img1, char *filename) {
 * - write a struct CompRecord with the info for the most similar image to out_fd
 */
 CompRecord process_dir(char *dirname, Image *img, int out_fd){
+	int nbytes;
 	DIR *dir = NULL;
 	char path[PATHLENGTH];
 	CompRecord Crec;
@@ -137,6 +144,14 @@ while((dp = readdir(dir)) != NULL) {
 		}		
 }
 closedir(dir);
+		if((nbytes = write(out_fd, &Crec.distance,sizeof(Crec.distance))) == -1){
+			perror("write");
+			exit(1);
+		}
+		if((nbytes = write(out_fd, Crec.filename, PATHLENGTH)) == -1 ){
+			perror("write");
+			exit(1);
+		}
         return Crec;
 }
 /*

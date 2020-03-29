@@ -14,12 +14,13 @@ yujason9
 #include "worker.h"
 
 int main(int argc, char **argv) {
-	
+	float distance = FLT_MAX;
 	char ch;
 	char path[PATHLENGTH];
 	char *startdir = ".";
     char *image_file = NULL;
-
+	int p[2]; //Pipe
+	pid_t pid;
 	while((ch = getopt(argc, argv, "d:")) != -1) {
 		switch (ch) {
 			case 'd':
@@ -35,7 +36,12 @@ int main(int argc, char **argv) {
 	     fprintf(stderr, "Usage: queryone [-d DIRECTORY_NAME] FILE_NAME\n");
         } else
              image_file = argv[optind];
-
+		
+	//Set up pipe
+	if(pipe(p) == -1){
+		perror("pipe");
+		exit(1);
+	}
 	// Open the directory provided by the user (or current working directory)
 	
 	DIR *dirp;
@@ -51,10 +57,9 @@ int main(int argc, char **argv) {
 		
 	struct dirent *dp;
         CompRecord CRec;
-		CompRecord tempRecord;
-
-	while((dp = readdir(dirp)) != NULL) {
-
+		strcpy(CRec.filename, "");
+		CRec.distance = FLT_MAX;
+	while((dp = readdir(dirp)) != NULL) {       
 		if(strcmp(dp->d_name, ".") == 0 || 
 		   strcmp(dp->d_name, "..") == 0 ||
 		   strcmp(dp->d_name, ".svn") == 0){
@@ -74,18 +79,40 @@ int main(int argc, char **argv) {
 
 		// Only call process_dir if it is a directory
 		// Otherwise ignore it.
-		if(S_ISDIR(sbuf.st_mode)) {
-                        printf("Processing all images in directory: %s \n", path);
-						tempRecord = process_dir(path, read_image(image_file), STDOUT_FILENO);
-						if(tempRecord.distance < CRec.distance){
-							CRec.distance = tempRecord.distance;
-							strcpy(CRec.filename, tempRecord.filename);
+		if(S_ISDIR(sbuf.st_mode)) {  	
+						//Fork at this point
+						pid = fork();
+						if(pid<0){
+							perror("fork()");
 						}
+						else if(pid == 0) {//Child
+						printf("Processing all images in directory: %s \n", path);
+						close(p[0]);
+						process_dir(path, read_image(image_file), p[1]);
+						break;
 		}
+		}
+	}
+	
+	
+
+        
+	if(pid > 0){//parent
+	int nbytes = 0;
+					close(p[1]);
+						char buf[PATHLENGTH];
+						while((nbytes = read(p[0],&distance, sizeof(float))) > 0){
+						strcpy(buf, " ");
+						nbytes = read(p[0], buf, PATHLENGTH);
+						buf[strlen(buf)] = '\0';
+						if(distance <= CRec.distance){
+							CRec.distance = distance;
+							strcpy(CRec.filename, buf);
+						}
+						}
+						close(p[0]);
+		printf("The most similar image is %s with a distance of %f\n", CRec.filename, CRec.distance);
 		
 	}
-
-        printf("The most similar image is %s with a distance of %f\n", CRec.filename, CRec.distance);
-	
 	return 0;
 }
